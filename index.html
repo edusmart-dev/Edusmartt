@@ -98,7 +98,7 @@ footer{text-align:center;background:var(--navy);color:#dce6ff;padding:25px;font-
 <body>
 <header>
   <div class="logo">Edu<span>Smart</span> 🎓 <small style="font-size:11px;color:#667085;font-weight:600">by Dev Mishra</small></div>
-  <nav><a href="#classes">Classes</a><a href="#subjects">Subjects</a><a href="#about">About</a><a href="#student-access" class="nav-cta">Student Login</a></nav>
+  <nav><a href="#classes">Classes</a><a href="#subjects">Subjects</a><a href="#practice-test">Practice Test</a><a href="#about">About</a><a href="#student-access" class="nav-cta">Student Login</a></nav>
 </header>
 
 <div style="background:#071329;padding:18px 5%;text-align:center">
@@ -206,6 +206,25 @@ footer{text-align:center;background:var(--navy);color:#dce6ff;padding:25px;font-
     <h3 id="chapterTitle" style="margin-top:0">Chapters</h3>
     <p class="form-note">Select a chapter to view its learning status.</p>
     <div id="chapterList"></div>
+  </div>
+</section>
+
+
+<section id="practice-test">
+  <h2 class="section-title">Online Practice Test</h2>
+  <p class="form-note">Class 11 Physics • Chapter 1: Units and Measurements • Sample test</p>
+  <div class="notice" style="margin-bottom:18px">
+    This is a 10-question practice test. You have 10 minutes. Select one answer for each question, then submit to see your score and explanations.
+  </div>
+  <div class="quiz-box" id="examBox">
+    <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center">
+      <strong>Practice Test</strong>
+      <strong id="examTimer" aria-live="polite">10:00</strong>
+    </div>
+    <div id="examQuestions" style="margin-top:16px"></div>
+    <button type="button" class="resource-action" id="submitExam" onclick="submitEduExam()">Submit Test</button>
+    <button type="button" class="resource-action" id="restartExam" onclick="startEduExam()" style="display:none;margin-left:8px">Try Again</button>
+    <div id="examResult" aria-live="polite" style="margin-top:18px"></div>
   </div>
 </section>
 
@@ -341,6 +360,84 @@ function checkEduQuiz(button,isCorrect){
   feedback.textContent=isCorrect?'Correct! Force is measured in newtons (N).':'Not quite. Try again!';
   feedback.style.color=isCorrect?'#0f9d75':'#b54708';
 }
+
+
+const eduExamQuestions = [
+  {q:"What is the SI unit of length?",o:["Kilometre","Metre","Centimetre","Mile"],a:1,e:"The SI base unit of length is the metre (m)."},
+  {q:"Which of the following is a fundamental physical quantity?",o:["Speed","Force","Mass","Density"],a:2,e:"Mass is a base quantity in the SI system."},
+  {q:"What is the SI unit of time?",o:["Minute","Hour","Second","Day"],a:2,e:"The SI base unit of time is the second (s)."},
+  {q:"How many significant figures are there in 0.00450?",o:["2","3","4","5"],a:1,e:"Leading zeros are not significant; 4, 5 and the final zero are significant."},
+  {q:"Which instrument is commonly used to measure the diameter of a thin wire accurately?",o:["Metre scale","Stopwatch","Screw gauge","Thermometer"],a:2,e:"A screw gauge is suitable for measuring small diameters."},
+  {q:"The dimensional formula of velocity is:",o:["[LT⁻¹]","[LT⁻²]","[MLT⁻¹]","[M⁰L⁰T]"],a:0,e:"Velocity = displacement / time, so its dimensions are [LT⁻¹]."},
+  {q:"Which pair has the same dimensions?",o:["Work and torque","Force and pressure","Power and energy","Momentum and force"],a:0,e:"Both work and torque have dimensions [ML²T⁻²], though they are different physical quantities."},
+  {q:"The least count of an instrument is:",o:["Its largest reading","The smallest measurement it can reliably read","Its total length","Its average reading"],a:1,e:"Least count is the smallest value that an instrument can measure."},
+  {q:"Which one is a derived SI unit?",o:["Kilogram","Second","Kelvin","Newton"],a:3,e:"Newton is a derived unit: kg·m·s⁻²."},
+  {q:"If the measured value is 2.5 m, its value in centimetres is:",o:["25 cm","250 cm","2500 cm","0.25 cm"],a:1,e:"1 metre = 100 centimetres, so 2.5 m = 250 cm."}
+];
+let eduExamTimer = null;
+let eduExamSeconds = 600;
+let eduExamFinished = false;
+
+function startEduExam(){
+  if(eduExamTimer) clearInterval(eduExamTimer);
+  eduExamSeconds = 600;
+  eduExamFinished = false;
+  document.getElementById('examResult').innerHTML = '';
+  document.getElementById('submitExam').style.display = 'inline-block';
+  document.getElementById('restartExam').style.display = 'none';
+  const box = document.getElementById('examQuestions');
+  box.innerHTML = '';
+  eduExamQuestions.forEach((item,i)=>{
+    const card = document.createElement('div');
+    card.style.cssText = 'padding:14px 0;border-bottom:1px solid #e4e7ec';
+    const title = document.createElement('p');
+    title.innerHTML = '<strong>Q'+(i+1)+'. '+item.q+'</strong>';
+    card.appendChild(title);
+    item.o.forEach((option,j)=>{
+      const label = document.createElement('label');
+      label.style.cssText = 'display:block;padding:7px 4px;cursor:pointer';
+      const radio = document.createElement('input');
+      radio.type = 'radio'; radio.name = 'eduExamQ'+i; radio.value = j;
+      radio.style.marginRight = '9px';
+      label.appendChild(radio);
+      label.appendChild(document.createTextNode(option));
+      card.appendChild(label);
+    });
+    box.appendChild(card);
+  });
+  updateEduExamTimer();
+  eduExamTimer = setInterval(()=>{
+    eduExamSeconds--;
+    updateEduExamTimer();
+    if(eduExamSeconds <= 0) submitEduExam(true);
+  },1000);
+}
+function updateEduExamTimer(){
+  const m = Math.floor(eduExamSeconds/60);
+  const s = eduExamSeconds%60;
+  document.getElementById('examTimer').textContent = m+':'+String(s).padStart(2,'0');
+}
+function submitEduExam(timeUp=false){
+  if(eduExamFinished) return;
+  eduExamFinished = true;
+  if(eduExamTimer) clearInterval(eduExamTimer);
+  let score = 0;
+  let answered = 0;
+  const result = document.getElementById('examResult');
+  let review = '<h3>Answer Review</h3>';
+  eduExamQuestions.forEach((item,i)=>{
+    const selected = document.querySelector('input[name="eduExamQ'+i+'"]:checked');
+    if(selected) answered++;
+    const correct = selected && Number(selected.value) === item.a;
+    if(correct) score++;
+    review += '<div style="padding:10px 0;border-bottom:1px solid #e4e7ec"><strong>Q'+(i+1)+'. '+item.q+'</strong><br>Your answer: '+(selected ? item.o[Number(selected.value)] : 'Not answered')+'<br>Correct answer: <strong>'+item.o[item.a]+'</strong><br><small>'+item.e+'</small></div>';
+  });
+  result.innerHTML = '<div class="notice"><h3>Test Result</h3><p><strong>Score: '+score+' / '+eduExamQuestions.length+'</strong></p><p>Answered: '+answered+' / '+eduExamQuestions.length+'</p><p>'+ (timeUp ? 'Time is up. ' : '') +'This is a practice score for this sample test.</p></div>'+review;
+  document.getElementById('submitExam').style.display = 'none';
+  document.getElementById('restartExam').style.display = 'inline-block';
+  result.scrollIntoView({behavior:'smooth',block:'start'});
+}
+document.addEventListener('DOMContentLoaded', startEduExam);
 
 </script>
 </body>
