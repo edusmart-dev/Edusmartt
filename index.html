@@ -59,6 +59,40 @@ footer{text-align:center;background:var(--navy);color:#dce6ff;padding:25px;font-
 .quiz-box button{margin:6px 6px 0 0}
 #quizFeedback{font-weight:700;margin-top:10px}
 
+
+/* Mobile navigation improvement */
+@media (max-width: 600px) {
+  header {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 5%;
+  }
+  .logo {
+    font-size: 22px;
+    line-height: 1.35;
+  }
+  header nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 14px;
+    width: 100%;
+  }
+  header nav a {
+    display: inline-block;
+    margin: 0;
+    padding: 6px 0;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+  header nav a.nav-cta {
+    padding: 9px 12px;
+  }
+}
+
 </style>
 </head>
 <body>
