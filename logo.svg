@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 140" width="500" height="140">
+  <defs>
+    <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2563EB"/>
+      <stop offset="100%" stop-color="#06B6D4"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="5" y="5" width="110" height="110" rx="25" fill="#0F172A"/>
+  <path d="M25 48 L60 30 L95 48 L60 66 Z" fill="url(#blue)"/>
+  <path d="M35 54 V77 Q60 94 85 77 V54" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M60 66 V88" stroke="#FFFFFF" stroke-width="4"/>
+
+  <text x="135" y="68" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#0F172A">Edu<tspan fill="#2563EB">Smart</tspan></text>
+  <text x="138" y="96" font-family="Arial, sans-serif" font-size="15" letter-spacing="3" fill="#64748B">LEARN • PRACTICE • EXCEL</text>
+</svg>
